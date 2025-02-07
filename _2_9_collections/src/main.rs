@@ -1,32 +1,23 @@
 
-// 填空
+// 修复错误
 fn main() {
-    // array -> Vec
-    // impl From<[T; N]> for Vec
-    let arr = [1, 2, 3];
-    let v1 = Vec::from(arr);
-    let v2: Vec<i32> = arr.into();
- 
-    assert_eq!(v1, v2);
- 
+    let mut v = vec![1, 2, 3];
+
+    let slice1 = &v[..];
+    // 越界访问将导致 panic.
+    // 修改时必须使用 `v.len`
+    let slice2 = &v[0..4];
     
-    // String -> Vec
-    // impl From<String> for Vec
-    let s = "hello".to_string();
-    let v1: Vec<u8> = s.into();
+    assert_eq!(slice1, slice2);
+    
+    // 切片是只读的
+    // 注意：切片和 `&Vec` 是不同的类型，后者仅仅是 `Vec` 的引用，并可以通过解引用直接获取 `Vec`
+    let vec_ref: &mut Vec<i32> = &mut v;
+    (*vec_ref).push(4);
+    let slice3 = &mut v[0..3];
+    slice3.push(4);
 
-    let s = "hello".to_string();
-    let v2 = s.into_bytes();
-    assert_eq!(v1, v2);
-
-    // impl<'_> From<&'_ str> for Vec
-    let s = "hello";
-    let v3 = Vec::__(s);
-    assert_eq!(v2, v3);
-
-    // 迭代器 Iterators 可以通过 collect 变成 Vec
-    let v4: Vec<i32> = [0; 10].into_iter().collect();
-    assert_eq!(v4, vec![0; 10]);
+    assert_eq!(slice3, &[1, 2, 3, 4]);
 
     println!("Success!")
- }
+}
